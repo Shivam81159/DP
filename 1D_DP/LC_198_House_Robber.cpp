@@ -60,32 +60,62 @@ public:
     }
 };
 
-
-
 // bottom up
-//time o(2*n)
-//o(1)
-
+//time o(n)
+//o(n) => dp array space
 class Solution {
 public:
-   int solve(int i,vector<int>& nums,vector<int>& dp)
-   {
-    int n = nums.size();
-    vector<int> dp(n,-1);
-    
-    if(i>=n)
-    return 0;
- 
-    if(dp[i]!=-1)
-    return dp[i];
-
-    int steal_current = nums[i] + solve(i+2,nums,dp);
-    int steal_next = solve(i+1,nums,dp);
-    return dp[i] = max(steal_current,steal_next);
-   }
-    int rob(vector<int>& nums) {
-        int i =0;
+    int solve(vector<int>& nums)
+    {
         int n = nums.size();
-        return solve(i,nums,dp);   
+
+        if(n == 0) return 0;
+        if(n == 1) return nums[0];
+
+        vector<int> dp(n + 1, 0);
+
+        dp[0] = 0;
+        dp[1] = nums[0];
+
+        for(int i = 2; i <= n; i++)
+        {
+            int steal_current = nums[i - 1] + dp[i - 2];
+            int skip_current = dp[i - 1];
+
+            dp[i] = max(steal_current, skip_current);
+        }
+
+        return dp[n];
+    }
+
+    int rob(vector<int>& nums) {
+        return solve(nums);
+    }
+};
+
+
+
+// bottom up optimized
+//time o(n)
+//o(1)
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int n = nums.size();
+
+        if(n == 0) return 0;              
+        if(n == 1) return nums[0];        
+        if(n == 2) return max(nums[0], nums[1]);
+
+        int prev = nums[0];
+        int prev1 = max(nums[0], nums[1]);  
+
+        for(int i = 2; i < n; i++) {
+            int curr = max(prev1, nums[i] + prev);
+            prev = prev1;
+            prev1 = curr;
+        }
+
+        return prev1;
     }
 };
