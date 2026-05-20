@@ -20,7 +20,17 @@
 //space o(n)
 class Solution {
 public:
+    int solve(vector<int>& nums,int i)
+    {
+        int n = nums.size();
+        if(i>=n)
+        return 0;
+        int steal_current = nums[i] + solve(nums,i+2%n);
+        int steal_next = solve(nums,i+1%n);
+        return max(steal_current,steal_next);
+    }
     int rob(vector<int>& nums) {
-        
+        int i=0;
+        return  solve(nums,i);
     }
 };
